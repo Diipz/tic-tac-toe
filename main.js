@@ -33,8 +33,8 @@ window.onload = () => {
     generatePlayerOneName();
     generatePlayerTwoName();
 
-    const aPlayer = createPlayer(playerOne, "X");
-    const anotherPlayer = createPlayer(playerTwo, "O");
+    const aPlayer = createPlayer(playerOne, "O");
+    const anotherPlayer = createPlayer(playerTwo, "X");
 }
 
 const createPlayer = (name, symbol) => {
@@ -42,8 +42,17 @@ const createPlayer = (name, symbol) => {
     let playerName = document.createElement("div");
     let marker = document.createElement("div");
 
-    playerName.classList.add("player");
+    playerName.classList.add("player-name");
+    marker.classList.add("player-symbol");
+    marker.classList.add("active");
     marker.classList.add("player");
+
+    11
+
+    //preset "O" to go first//
+    if (symbol === "X") {
+        marker.classList.toggle("active");
+    }
 
     playerName.innerHTML = name;
     marker.innerHTML = symbol;
@@ -51,3 +60,31 @@ const createPlayer = (name, symbol) => {
     container.appendChild(playerName);
     container.appendChild(marker);
 }
+
+const gameBoard = (() => {
+    let board = [];
+    for (let i = 0; i < 9; i++) {
+        board.push("");
+    }
+
+    let boardLocation = document.querySelector("ul")
+    board.forEach(element => {
+        const square = document.createElement("li");
+        square.setAttribute("draggable", "false");
+        square.addEventListener("click", () => {
+            let activePlayer = document.querySelector(".active");
+            square.innerHTML = activePlayer.innerHTML;
+
+            //disable future onclick enents//
+            square.style.pointerEvents = "none";
+
+            let activePlayerToggle = document.querySelectorAll(".player");
+            Array.from(activePlayerToggle).forEach((item) => {
+                item.classList.toggle("active");
+            });
+        });
+        boardLocation.appendChild(square);
+
+    });
+
+})();
