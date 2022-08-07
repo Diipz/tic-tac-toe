@@ -93,9 +93,8 @@ const game = (() => {
     function checkWinner() {
         winningCombinations.forEach(item => {
             if (gameBoard.board[item[0]] === activePlayer.symbol && gameBoard.board[item[1]] === activePlayer.symbol && gameBoard.board[item[2]] === activePlayer.symbol) {
-                console.log("winner");
                 subtext.innerHTML = `${activePlayer.name} wins!!`;
-                winnerDeclared = true;
+                this.winnerDeclared = true;
             }
         })
     }
@@ -134,6 +133,7 @@ const gameBoard = (() => {
     let activePlayerName = document.querySelector(".active-name");
     let activePlayerSymbol = document.querySelector(".active");
 
+
     board.forEach((item, index) => {
         const square = document.createElement("li");
         square.setAttribute("draggable", "false");
@@ -149,7 +149,6 @@ const gameBoard = (() => {
 
             //update remainingSpots
             game.remainingSpots -= 1;
-            console.log(game.remainingSpots);
 
             //disable future onclick events
             square.style.pointerEvents = "none";
@@ -165,10 +164,9 @@ const gameBoard = (() => {
                 game.declareTieGame();
             }
 
-
             //switch active player each click
             let activePlayerToggle = document.querySelectorAll(".player");
-            Array.from(activePlayerToggle).forEach((item) => {
+            Array.from(activePlayerToggle).forEach(item => {
                 item.classList.toggle("active");
                 item.classList.toggle("active-name");
             });
@@ -177,6 +175,20 @@ const gameBoard = (() => {
         boardLocation.appendChild(square);
 
     });
+
+
+    let squares = document.querySelectorAll("li");
+    Array.from(squares).forEach(item => {
+        item.addEventListener("click", () => {
+            console.log(game.winnerDeclared);
+            if (game.winnerDeclared == true) {
+                Array.from(squares).forEach(element => {
+                    element.style.pointerEvents = "none";
+                })
+            }
+        })
+    })
+
     return {
         activePlayerName,
         activePlayerSymbol,
