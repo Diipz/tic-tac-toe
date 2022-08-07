@@ -69,6 +69,60 @@ const players = (() => {
 })();
 
 
+const game = (() => {
+    //starting point
+    let remainingSpots = 9;
+    let winnerDeclared = false;
+    let activePlayer = players.firstPlayer;
+
+    //selectors
+    let subtext = document.querySelector("h2");
+
+    //winning criteria
+    const winningCombinations = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+
+    function checkWinner() {
+        winningCombinations.forEach(item => {
+            if (gameBoard.board[item[0]] === activePlayer.symbol && gameBoard.board[item[1]] === activePlayer.symbol && gameBoard.board[item[2]] === activePlayer.symbol) {
+                console.log("winner");
+                subtext.innerHTML = `${activePlayer.name} wins!!`;
+                winnerDeclared = true;
+            }
+        })
+    }
+
+    function switchActivePlayer() {
+        if (activePlayer === players.firstPlayer) {
+            activePlayer = players.secondPlayer;
+        }
+        else {
+            activePlayer = players.firstPlayer;
+        }
+    }
+
+    function declareTieGame() {
+        subtext.innerHTML = `Tie Game!!`;
+    }
+
+    return {
+        remainingSpots,
+        winnerDeclared,
+        checkWinner,
+        switchActivePlayer,
+        declareTieGame
+    };
+
+})();
+
 const gameBoard = (() => {
     let board = [];
     for (let i = 0; i < 9; i++) {
@@ -78,7 +132,6 @@ const gameBoard = (() => {
     let boardLocation = document.querySelector("ul");
 
     let activePlayerName = document.querySelector(".active-name");
-    console.log(activePlayerName.innerHTML);
     let activePlayerSymbol = document.querySelector(".active");
 
     board.forEach((item, index) => {
@@ -96,9 +149,22 @@ const gameBoard = (() => {
 
             //update remainingSpots
             game.remainingSpots -= 1;
+            console.log(game.remainingSpots);
 
             //disable future onclick events
             square.style.pointerEvents = "none";
+
+            //check for winner
+            game.checkWinner();
+
+            //switch active player
+            game.switchActivePlayer();
+
+            //check for tied game
+            if (game.winnerDeclared == false && game.remainingSpots == 0) {
+                game.declareTieGame();
+            }
+
 
             //switch active player each click
             let activePlayerToggle = document.querySelectorAll(".player");
@@ -111,34 +177,9 @@ const gameBoard = (() => {
         boardLocation.appendChild(square);
 
     });
-    return { activePlayerName };
-})();
-
-
-
-const game = (() => {
-    //starting point
-    let remainingSpots = 9;
-    let winnerDeclared = false;
-
-    //selectors
-    let subtext = document.querySelector("h2");
-
-    //winning criteria
-    const winningCombinations = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ]
-
     return {
-        remainingSpots,
-        winnerDeclared
+        activePlayerName,
+        activePlayerSymbol,
+        board
     };
-
 })();
