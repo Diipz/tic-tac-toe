@@ -77,6 +77,7 @@ const game = (() => {
 
     //selectors
     let subtext = document.querySelector("h2");
+    let restart = document.querySelector(".restart");
 
     //winning criteria
     const winningCombinations = [
@@ -94,7 +95,7 @@ const game = (() => {
         winningCombinations.forEach(item => {
             if (gameBoard.board[item[0]] === activePlayer.symbol && gameBoard.board[item[1]] === activePlayer.symbol && gameBoard.board[item[2]] === activePlayer.symbol) {
                 subtext.innerHTML = `${activePlayer.name} wins!!`;
-                this.winnerDeclared = true;
+                game.winnerDeclared = true;
             }
         })
     }
@@ -111,6 +112,10 @@ const game = (() => {
     function declareTieGame() {
         subtext.innerHTML = `Tie Game!!`;
     }
+
+    restart.addEventListener("click", () => {
+        location.reload(true);
+    })
 
     return {
         remainingSpots,
@@ -176,11 +181,10 @@ const gameBoard = (() => {
 
     });
 
-
+    //inactivate click events for remaining squares once winner declared
     let squares = document.querySelectorAll("li");
     Array.from(squares).forEach(item => {
         item.addEventListener("click", () => {
-            console.log(game.winnerDeclared);
             if (game.winnerDeclared == true) {
                 Array.from(squares).forEach(element => {
                     element.style.pointerEvents = "none";
